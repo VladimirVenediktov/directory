@@ -50,11 +50,14 @@ public class EmployeeController {
                                   @RequestParam String position,
                                   @RequestParam String dateOfBirth,
                                   @RequestParam String mobilePhone,
-                                  @RequestParam String email) {
+                                  @RequestParam String email,
+                                  Model model) {
 
         Employee employee = new Employee(firstName, secondName, thirdName,
                 position, dateOfBirth, mobilePhone, email);
         employeeRepo.save(employee);
+        List<Employee> employeeList = mainService.getEmployeeList();
+        model.addAttribute("employees", employeeList);
         return HOME_PAGE;
     }
 
@@ -93,19 +96,14 @@ public class EmployeeController {
         return HOME_PAGE;
     }
 
+    @PostMapping("{id}/remove")
+    public String employeeDelete(@PathVariable(value = "id") long id, Model model) {
+        employeeRepo.deleteById(id);
 
-
-
-
-
-
-
-
-
-
-
-
-
+        List<Employee> employeeList = mainService.getEmployeeList();
+        model.addAttribute("employees", employeeList);
+        return "redirect:/home";
+    }
 
 
 }

@@ -18,8 +18,11 @@
         <input type="text" name="email" th:value="${employee.getEmail()}" required><br>
 
         <button type="submit" class="btn btn-secondary">Update</button>
-        <button type="submit" class="btn btn-secondary">Delete</button> <!--TODO:сделать удаление-->
     </form>
+        <form th:action="${employee.id} +'/remove'" method="post">
+            <button type="submit" class="btn btn-secondary">Delete</button>
+        </form>
+
 
 </div>
 </body>
