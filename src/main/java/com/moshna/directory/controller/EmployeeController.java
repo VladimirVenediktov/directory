@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.jws.WebParam;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -33,6 +33,7 @@ public class EmployeeController {
     @GetMapping("/home")
     public String goHome(Model model)
     {
+
         List<Employee> employeeList = mainService.getEmployeeList();
         model.addAttribute("employees", employeeList);
         return HOME_PAGE;
@@ -57,6 +58,23 @@ public class EmployeeController {
                 position, dateOfBirth, mobilePhone, email);
         employeeRepo.save(employee);
         List<Employee> employeeList = mainService.getEmployeeList();
+        model.addAttribute("employees", employeeList);
+        return HOME_PAGE;
+    }
+
+    @PostMapping("filterByName")
+    public String filterByName(Model model) {
+        List<Employee> employeeList = mainService.getEmployeeList();
+
+        employeeList.sort(Comparator.comparing(Employee::getFirstName));
+        model.addAttribute("employees", employeeList);
+        return HOME_PAGE;
+    }
+    @PostMapping("filterByPosition")
+    public String filterByPosition(Model model) {
+        List<Employee> employeeList = mainService.getEmployeeList();
+
+        employeeList.sort(Comparator.comparing(Employee::getPosition));
         model.addAttribute("employees", employeeList);
         return HOME_PAGE;
     }
@@ -104,6 +122,7 @@ public class EmployeeController {
         model.addAttribute("employees", employeeList);
         return "redirect:/home";
     }
+
 
 
 }
