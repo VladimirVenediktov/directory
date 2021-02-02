@@ -1,9 +1,7 @@
 package com.moshna.directory.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
 
 @Entity
 public class Employee {
@@ -11,13 +9,15 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Column(unique = true, nullable = false)
     private String firstName;
+    @Column(unique = true, nullable = false)
     private String secondName;
     private String thirdName;
     private String position;
     private String dateOfBirth;
     private String mobilePhone;
+    @Email(message = "Email is not correct")
     private String email;
 
     public Employee() {

@@ -1,6 +1,6 @@
 package com.moshna.directory.controller;
 
-import com.moshna.directory.dto.EmployeeRepo;
+import com.moshna.directory.repo.EmployeeRepo;
 
 import com.moshna.directory.model.Employee;
 import com.moshna.directory.service.MainService;
@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
+
 
 @Controller
 public class EmployeeController {
@@ -45,21 +47,24 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee")
-    public String employeePostAdd(@RequestParam String firstName,
-                                  @RequestParam String secondName,
-                                  @RequestParam String thirdName,
-                                  @RequestParam String position,
-                                  @RequestParam String dateOfBirth,
-                                  @RequestParam String mobilePhone,
-                                  @RequestParam String email,
+    public String employeePostAdd(@Valid Employee employee,
                                   Model model) {
 
-        Employee employee = new Employee(firstName, secondName, thirdName,
-                position, dateOfBirth, mobilePhone, email);
-        employeeRepo.save(employee);
+        /*Employee employee = new Employee(firstName, secondName, thirdName,
+                position, dateOfBirth, mobilePhone, email);*/
         List<Employee> employeeList = mainService.getEmployeeList();
-        model.addAttribute("employees", employeeList);
-        return HOME_PAGE;
+        String message = "";
+
+        try {
+            employeeRepo.save(employee);
+            model.addAttribute("employees", employeeList);
+
+            return "redirect:/home";
+        } catch (Exception e) {
+            message = "validation error " + e.getMessage();
+            model.addAttribute("validationMessage", message); //TODO:сделать нормальный вывод ошибок
+            return EMPLOYEE_ADDING;
+        }
     }
 
     @PostMapping("filterByName")

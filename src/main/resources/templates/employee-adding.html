@@ -18,7 +18,9 @@
         <input type="text" name="email" placeholder="Enter the email" class="form-control" required><br>
 
         <button type="submit" class="btn btn-secondary">Add</button>
-
+        <div class="form-group">
+            <a th:text="${validationMessage}"/>
+        </div>
     </form>
 
 </div>

@@ -1,6 +1,6 @@
 package com.moshna.directory.service;
 
-import com.moshna.directory.dto.EmployeeRepo;
+import com.moshna.directory.repo.EmployeeRepo;
 import com.moshna.directory.model.Employee;
 import org.springframework.stereotype.Service;
 
