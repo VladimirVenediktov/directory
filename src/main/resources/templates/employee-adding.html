@@ -16,7 +16,15 @@
         <input type="text" name="dateOfBirth" placeholder="Enter the date of birth" class="form-control"><br>
         <input type="text" name="mobilePhone" placeholder="Enter the mobile phone number" class="form-control" required><br>
         <input type="text" name="email" placeholder="Enter the email" class="form-control" required><br>
-
+        <div class="form-group blu-margin">
+            <select name="departmentID" class="form-control" required>
+                <option value="">Select department</option>
+                <option th:each="department : ${departmentList}"
+                        th:value="${department.id}"
+                        th:text="${department.title}">
+                </option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-secondary">Add</button>
         <div class="form-group">
             <a th:text="${validationMessage}"/>

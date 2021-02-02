@@ -19,11 +19,13 @@ public class Employee {
     private String mobilePhone;
     @Email(message = "Email is not correct")
     private String email;
+    private Long departmentID;
 
     public Employee() {
     }
 
-    public Employee(String firstName, String secondName, String thirdName, String position, String dateOfBirth, String mobilePhone, String email) {
+    public Employee(String firstName, String secondName, String thirdName, String position, String dateOfBirth,
+                    String mobilePhone, String email, Long departmentID) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.thirdName = thirdName;
@@ -31,14 +33,23 @@ public class Employee {
         this.dateOfBirth = dateOfBirth;
         this.mobilePhone = mobilePhone;
         this.email = email;
+        this.departmentID = departmentID;
     }
-
+/*
     public Employee(Long id, String firstName, String secondName, String mobilePhone, String email) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
         this.mobilePhone = mobilePhone;
         this.email = email;
+    }*/
+
+    public Long getDepartmentID() {
+        return departmentID;
+    }
+
+    public void setDepartmentID(Long departmentID) {
+        this.departmentID = departmentID;
     }
 
     public Long getId() {

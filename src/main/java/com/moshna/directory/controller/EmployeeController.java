@@ -1,5 +1,7 @@
 package com.moshna.directory.controller;
 
+import com.moshna.directory.model.Department;
+import com.moshna.directory.repo.DepartmentRepo;
 import com.moshna.directory.repo.EmployeeRepo;
 
 import com.moshna.directory.model.Employee;
@@ -20,6 +22,7 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeRepo employeeRepo;
+    private final DepartmentRepo departmentRepo;
     private final MainService mainService;
 
     public static final String HOME_PAGE = "home";
@@ -27,9 +30,11 @@ public class EmployeeController {
     public static final String EMPLOYEE_DETAILS = "employee-details";
 
     public EmployeeController(EmployeeRepo employeeRepo,
-                              MainService mainService) {
+                              MainService mainService,
+                              DepartmentRepo departmentRepo) {
         this.employeeRepo = employeeRepo;
         this.mainService = mainService;
+        this.departmentRepo = departmentRepo;
     }
 
     @GetMapping("/home")
@@ -43,22 +48,21 @@ public class EmployeeController {
 
     @GetMapping("/employee")
     public String employeeAdding(Model model) {
+        List<Department> departmentList = mainService.getDepartmentList();
+        model.addAttribute("departmentList", departmentList);
         return EMPLOYEE_ADDING;
     }
 
     @PostMapping("/employee")
     public String employeePostAdd(@Valid Employee employee,
-                                  Model model) {
+                                  Model model) throws Exception {
 
-        /*Employee employee = new Employee(firstName, secondName, thirdName,
-                position, dateOfBirth, mobilePhone, email);*/
         List<Employee> employeeList = mainService.getEmployeeList();
         String message = "";
 
         try {
             employeeRepo.save(employee);
             model.addAttribute("employees", employeeList);
-
             return "redirect:/home";
         } catch (Exception e) {
             message = "validation error " + e.getMessage();
@@ -88,8 +92,14 @@ public class EmployeeController {
     public String employeeDetails(@PathVariable(value = "id") long id, Model model) throws Exception {
 
         Employee employee = employeeRepo.findById(id).orElseThrow(() -> new Exception("Employee not found - " + id));
-        model.addAttribute("employee", employee);
+        Department departmentSelected = departmentRepo.findById(employee.getDepartmentID()).orElseThrow(() ->
+                new Exception("Department not found - " + employee.getDepartmentID()));
 
+        List<Department> departmentList = mainService.getDepartmentList();
+
+        model.addAttribute("employee", employee);
+        model.addAttribute("departmentSelected", departmentSelected);
+        model.addAttribute("departmentList", departmentList);
         return EMPLOYEE_DETAILS;
     }
 
@@ -102,6 +112,7 @@ public class EmployeeController {
                                  @RequestParam String dateOfBirth,
                                  @RequestParam String mobilePhone,
                                  @RequestParam String email,
+                                 @RequestParam Long departmentID,
                                  Model model) throws Exception {
         Employee employee = employeeRepo.findById(id).orElseThrow(() -> new Exception("Employee not found - " + id));
 
@@ -112,11 +123,12 @@ public class EmployeeController {
         employee.setDateOfBirth(dateOfBirth);
         employee.setMobilePhone(mobilePhone);
         employee.setEmail(email);
+        employee.setDepartmentID(departmentID);
         employeeRepo.save(employee);
 
         List<Employee> employeeList = mainService.getEmployeeList();
         model.addAttribute("employees", employeeList);
-        return HOME_PAGE;
+        return "redirect:/home";
     }
 
     @PostMapping("{id}/remove")

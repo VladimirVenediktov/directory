@@ -16,7 +16,17 @@
         <input type="text" name="dateOfBirth" th:value="${employee.getDateOfBirth()}"><br>
         <input type="text" name="mobilePhone" th:value="${employee.getMobilePhone()}" required><br>
         <input type="text" name="email" th:value="${employee.getEmail()}" required><br>
-
+        <div class="form-group blu-margin">
+            <select name="departmentID" class="form-control" required>
+                <option th:text="${departmentSelected.title}"
+                        th:value="${departmentSelected.id}"
+                ></option>
+                <option th:each="department : ${departmentList}"
+                        th:value="${department.id}"
+                        th:text="${department.title}">
+                </option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-secondary">Update</button>
     </form>
         <form th:action="${employee.id} +'/remove'" method="post">
