@@ -1,6 +1,7 @@
 package com.moshna.directory.controller;
 
 import com.moshna.directory.model.Department;
+import com.moshna.directory.model.EmployeeExcelExporter;
 import com.moshna.directory.repo.DepartmentRepo;
 import com.moshna.directory.repo.EmployeeRepo;
 
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -163,6 +166,21 @@ public class EmployeeController {
         return "redirect:/home";
     }
 
+    @GetMapping("/export")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
 
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=employees.xlsx";
+
+        response.setHeader(headerKey, headerValue);
+
+        List<Employee> employeeList = mainService.getEmployeeList();
+        List<Department> departmentList = mainService.getDepartmentList();
+
+        EmployeeExcelExporter excelExporter = new EmployeeExcelExporter(employeeList, departmentList);
+        excelExporter.export(response);
+
+    }
 
 }
