@@ -8,11 +8,12 @@
 <body>
 <header th:insert="blocks/header :: header"></header><br>
 <div class="container order-md-2 mt-5 mb-5">
-    <form action="/employee" method="post">
+    <form action="/employee" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" class="form-control"><br>
         <input type="text" name="firstName" placeholder="Enter the first name" class="form-control" required><br>
         <input type="text" name="secondName" placeholder="Enter the second name" class="form-control" required><br>
         <input type="text" name="thirdName" placeholder="Enter the third name" class="form-control"><br>
-        <input type="text" name="position" placeholder="Enter the position" class="form-control"><br> <!--Потом будет выпадающий список-->
+        <input type="text" name="position" placeholder="Enter the position" class="form-control"><br>
         <input type="text" name="dateOfBirth" placeholder="Enter the date of birth" class="form-control"><br>
         <input type="text" name="mobilePhone" placeholder="Enter the mobile phone number" class="form-control" required><br>
         <input type="text" name="email" placeholder="Enter the email" class="form-control" required><br>
@@ -30,7 +31,6 @@
             <a th:text="${validationMessage}"/>
         </div>
     </form>
-
 </div>
 </body>
 </html>

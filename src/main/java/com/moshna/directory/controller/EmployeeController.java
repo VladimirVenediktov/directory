@@ -6,16 +6,20 @@ import com.moshna.directory.repo.EmployeeRepo;
 
 import com.moshna.directory.model.Employee;
 import com.moshna.directory.service.MainService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 
 @Controller
@@ -28,6 +32,9 @@ public class EmployeeController {
     public static final String HOME_PAGE = "home";
     public static final String EMPLOYEE_ADDING = "employee-adding";
     public static final String EMPLOYEE_DETAILS = "employee-details";
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     public EmployeeController(EmployeeRepo employeeRepo,
                               MainService mainService,
@@ -55,9 +62,25 @@ public class EmployeeController {
 
     @PostMapping("/employee")
     public String employeePostAdd(@Valid Employee employee,
+                                  @RequestParam("file") MultipartFile file,
                                   Model model) throws Exception {
 
         List<Employee> employeeList = mainService.getEmployeeList();
+
+        if(file != null) {
+            File uploadDir = new File(uploadPath);
+
+            if(!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFileName = uuidFile + "." + file.getOriginalFilename();
+            file.transferTo(new File(uploadPath + "/" + resultFileName));
+            employee.setFileName(resultFileName);
+        }
+
+
+
         String message = "";
 
         try {

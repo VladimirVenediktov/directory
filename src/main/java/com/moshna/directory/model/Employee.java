@@ -21,6 +21,8 @@ public class Employee {
     private String email;
     private Long departmentID;
 
+    private String fileName;
+
     public Employee() {
     }
 
@@ -114,5 +116,13 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
