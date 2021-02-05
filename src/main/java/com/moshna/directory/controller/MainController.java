@@ -11,6 +11,6 @@ public class MainController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("title", "Main page");
-        return "home";
+        return "redirect:/home";
     }
 }
