@@ -4,14 +4,16 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 
 @Entity
+@Table(name = "employees",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames ={"firstName", "secondName","Email"})
+    })
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique = true, nullable = false)
     private String firstName;
-    @Column(unique = true, nullable = false)
     private String secondName;
     private String thirdName;
     private String position;

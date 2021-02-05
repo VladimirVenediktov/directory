@@ -66,7 +66,8 @@ public class EmployeeController {
                                   Model model) throws Exception {
 
         List<Employee> employeeList = mainService.getEmployeeList();
-
+        List<Department> departmentList = mainService.getDepartmentList();
+        model.addAttribute("departmentList", departmentList);
         if(file != null) {
             File uploadDir = new File(uploadPath);
 
