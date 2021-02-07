@@ -8,12 +8,22 @@
 <body>
 <header th:insert="blocks/header :: header"></header><br>
 
-
-<form action="/filterByName" method="post" enctype="multipart/form-data">
-    <input type="text" name="name" placeholder="Filter by name" class="form-control"><br>
-    <input type="text" name="position" placeholder="Filter by position" class="form-control"><br>
-    <button type="submit" class="btn btn-secondary">Search</button>
-</form>
+<div class="row">
+    <form action="/filterByName" method="post" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Filter by name" class="form-control"><br>
+        <input type="text" name="position" placeholder="Filter by position" class="form-control"><br>
+        <div class="form-group blu-margin">
+            <select name="departmentID" class="form-control" required>
+                <option value="">Select department</option>
+                <option th:each="department : ${departmentList}"
+                        th:value="${department.id}"
+                        th:text="${department.title}">
+                </option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-secondary">Search</button>
+    </form>
+</div>
 
 <table class="table">
     <thead>
@@ -29,70 +39,47 @@
     <tbody>
     <ul th:each="employee : ${employees}">
         <tr>
-            <td><i th:text="${employee.getFirstName()} + ' ' +  ${employee.getSecondName()}"></i></td>
-            <td><i th:text="${employee.getPosition()}"></i></td>
-            <td><i th:text="${employee.getDateOfBirth()}"></i></td>
-            <td><i th:text="${employee.getMobilePhone()}"></i></td>
-            <td><i th:text="${employee.getEmail()}"></i></td>
-            <td><i th:text="${employee.getDepartmentName()}"></i></td>
+            <td><div th:text="${employee.getFirstName()} + ' ' +  ${employee.getSecondName()}"></div></td>
+            <td><div th:text="${employee.getPosition()}"></div></td>
+            <td><div th:text="${employee.getDateOfBirth()}"></div></td>
+            <td><div th:text="${employee.getMobilePhone()}"></div></td>
+            <td><div th:text="${employee.getEmail()}"></div></td>
+            <td><div th:text="${employee.getDepartmentName()}"></div></td>
             <td><a th:href="${employee.getId()}">Edit</a></td>
 
         </tr>
     </ul>
     </tbody>
 </table>
-
-<!--<ul th:each="employee : ${employees}">
-    <div class="col-4 themed-grid-col">
-        <a th:href="${employee.getId()}" th:text="${employee.getFirstName()} + ' ' +  ${employee.getSecondName()}"></a>
-    </div>
-</ul>-->
 </div>
 <div class="col-md-5 mb-3">
     <a href="/employee" class="btn">Add new employee</a>
-    <style>
-        .btn {
-            display: inline-block;
-            background: #8C959D;
-            color: #fff;
-            padding: 1rem 1.5rem;
-            text-decoration: none;
-            border-radius: 3px;
-        }
-    </style>
 </div>
 <div class="col-md-5 mb-3">
     <a href="/department" class="btn">Add new department</a>
-    <style>
-        .btn {
-            display: inline-block;
-            background: #8C959D;
-            color: #fff;
-            padding: 1rem 1.5rem;
-            text-decoration: none;
-            border-radius: 3px;
-        }
-    </style>
 </div>
-<form action="/sortingByName" method="post">
-    <button type="submit">Filter by first name</button>
-    <style>
-        .btn {
-            display: inline-block;
-            background: #8C959D;
-            color: #fff;
-            padding: 1rem 1.5rem;
-            text-decoration: none;
-            border-radius: 3px;
-        }
-    </style>
-</form>
-<form action="/sortingByPosition" method="post">
-    <button type="submit">Filter by position</button>
-</form>
+<div class="row">
+    <form action="/sortingByName" method="post">
+        <button type="submit">Filter by first name</button>
+    </form><br>
+    <form action="/sortingByPosition" method="post">
+        <button type="submit">Filter by position</button>
+    </form>
+</div>
 <form action="/export" method="get">
     <button type="submit">Export to excel</button>
 </form>
+
+<style>
+    .btn {
+        display: inline-block;
+        background: #8C959D;
+        color: #fff;
+        padding: 1rem 1.5rem;
+        text-decoration: none;
+        border-radius: 3px;
+    }
+</style>
 
 </body>
 </html>

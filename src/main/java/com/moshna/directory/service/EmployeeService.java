@@ -4,6 +4,8 @@ import com.moshna.directory.model.Department;
 import com.moshna.directory.model.Employee;
 import com.moshna.directory.repo.DepartmentRepo;
 import com.moshna.directory.repo.EmployeeRepo;
+import com.moshna.directory.repo.EmployeeRepoCustom;
+import com.moshna.directory.repo.EmployeeRepoCustomImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,10 +21,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import static com.moshna.directory.repo.EmployeeRepo.*;
+import static org.springframework.data.jpa.domain.Specification.where;
+
 @Service
 public class EmployeeService {
 
     private final EmployeeRepo employeeRepo;
+    private final EmployeeRepoCustomImpl employeeRepoCustom;
     private final DepartmentRepo departmentRepo;
     private final MainService mainService;
 
@@ -34,14 +40,20 @@ public class EmployeeService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    public EmployeeService(EmployeeRepo employeeRepo, DepartmentRepo departmentRepo, MainService mainService) {
+    public EmployeeService(EmployeeRepo employeeRepo,
+                           DepartmentRepo departmentRepo,
+                           MainService mainService,
+                           EmployeeRepoCustomImpl employeeRepoCustom) {
         this.employeeRepo = employeeRepo;
         this.departmentRepo = departmentRepo;
         this.mainService = mainService;
+        this.employeeRepoCustom = employeeRepoCustom;
     }
 
     public String goHome(Model model) {
         List<Employee> employeeList = mainService.getEmployeeList();
+        List<Department> departmentList = mainService.getDepartmentList();
+        model.addAttribute("departmentList", departmentList);
         model.addAttribute("employees", employeeList);
         return HOME_PAGE;
     }
@@ -129,6 +141,7 @@ public class EmployeeService {
             employee.setMobilePhone(mobilePhone);
             employee.setEmail(email);
             employee.setDepartmentID(departmentID);
+            employee.setFullName(firstName + " " + secondName);
             employeeRepo.save(employee);
 
             List<Employee> employeeList = mainService.getEmployeeList();
@@ -172,13 +185,16 @@ public class EmployeeService {
         return HOME_PAGE;
     }
 
-    public String filterByName(@RequestParam String name,
-                               @RequestParam String position,
+    public String filterByName(String name,
+                               String position,
+                               Long departmentID,
                                Model model) {
-        List<Employee> employeeList = mainService.getEmployeeList();
-        //List<Employee> e = mainService.getFilteredEmployeeListByFullName(name);
-
-        //TODO: сделать поиск
+        //List<Employee> e = employeeRepo.findAllByFullName(/*name,*/ position);
+        List<Employee> employeeFilteredList = employeeRepo.findAll(where(hasFirstName(name)
+                .and(hasPosition(position))
+                .and(hasDepartment(departmentID))));
+        model.addAttribute("employees", employeeFilteredList);
+        //TODO: регистр
 
         return HOME_PAGE;
     }

@@ -20,6 +20,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
 
+
     public EmployeeController(MainService mainService,
                               EmployeeService employeeService) {
         this.mainService = mainService;
@@ -90,8 +91,9 @@ public class EmployeeController {
     @PostMapping("filterByName")
     public String filterByName(@RequestParam String name,
                                @RequestParam String position,
+                               @RequestParam Long departmentID,
                                Model model) {
 
-        return employeeService.filterByName(name, position,model);
+        return employeeService.filterByName(name, position, departmentID, model);
     }
 }
