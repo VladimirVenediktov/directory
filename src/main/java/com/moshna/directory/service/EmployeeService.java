@@ -64,8 +64,8 @@ public class EmployeeService {
         return EMPLOYEE_ADDING;
     }
 
-    public String employeePostAdd(@Valid Employee employee,
-                                  @RequestParam("file") MultipartFile file,
+    public String employeePostAdd(Employee employee,
+                                  MultipartFile file,
                                   Model model) throws Exception {
 
         List<Employee> employeeList = mainService.getEmployeeList();
@@ -105,7 +105,7 @@ public class EmployeeService {
         }
     }
 
-    public String employeeDetails(@PathVariable(value = "id") long id, Model model) throws Exception {
+    public String employeeDetails(long id, Model model) throws Exception {
 
         Employee employee = employeeRepo.findById(id).orElseThrow(() -> new Exception("Employee not found - " + id));
         Department departmentSelected = departmentRepo.findById(employee.getDepartmentID()).orElseThrow(() ->
@@ -119,15 +119,9 @@ public class EmployeeService {
         return EMPLOYEE_DETAILS;
     }
 
-    public String employeeUpdate(@PathVariable(value = "id") long id,
-                                 @RequestParam String firstName,
-                                 @RequestParam String secondName,
-                                 @RequestParam String thirdName,
-                                 @RequestParam String position,
-                                 @RequestParam String dateOfBirth,
-                                 @RequestParam String mobilePhone,
-                                 @RequestParam String email,
-                                 @RequestParam Long departmentID,
+    public String employeeUpdate(long id, String firstName, String secondName,
+                                 String thirdName, String position, String dateOfBirth,
+                                 String mobilePhone, String email, Long departmentID,
                                  Model model) throws Exception {
         Employee employee = employeeRepo.findById(id).orElseThrow(() -> new Exception("Employee not found - " + id));
 
@@ -155,7 +149,7 @@ public class EmployeeService {
 
     }
 
-    public String employeeDelete(@PathVariable(value = "id") long id, Model model) {
+    public String employeeDelete(long id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
             employeeRepo.deleteById(id);
@@ -185,14 +179,17 @@ public class EmployeeService {
         return HOME_PAGE;
     }
 
-    public String filterByName(String name,
+    public String filterByParams(String name,
                                String position,
                                Long departmentID,
                                Model model) {
-        //List<Employee> e = employeeRepo.findAllByFullName(/*name,*/ position);
         List<Employee> employeeFilteredList = employeeRepo.findAll(where(hasFirstName(name)
                 .and(hasPosition(position))
-                .and(hasDepartment(departmentID))));
+                .or(hasDepartment(departmentID))));
+        List<Employee> employeeList = mainService.getEmployeeList();
+        List<Department> departmentList = mainService.getDepartmentList();
+        model.addAttribute("departmentList", departmentList);
+        model.addAttribute("employees", employeeList);
         model.addAttribute("employees", employeeFilteredList);
         //TODO: регистр
 

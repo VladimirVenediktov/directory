@@ -9,11 +9,11 @@
 <header th:insert="blocks/header :: header"></header><br>
 
 <div class="row">
-    <form action="/filterByName" method="post" enctype="multipart/form-data">
+    <form action="/filterByParams" method="post" enctype="multipart/form-data">
         <input type="text" name="name" placeholder="Filter by name" class="form-control"><br>
         <input type="text" name="position" placeholder="Filter by position" class="form-control"><br>
         <div class="form-group blu-margin">
-            <select name="departmentID" class="form-control" required>
+            <select name="departmentID" class="form-control">
                 <option value="">Select department</option>
                 <option th:each="department : ${departmentList}"
                         th:value="${department.id}"
@@ -39,7 +39,9 @@
     <tbody>
     <ul th:each="employee : ${employees}">
         <tr>
-            <td><div th:text="${employee.getFirstName()} + ' ' +  ${employee.getSecondName()}"></div></td>
+            <td><div th:text="${employee.getFirstName()} + ' '
+            + ${employee.getSecondName()} + ' '
+            + ${employee.getThirdName()}"></div></td>
             <td><div th:text="${employee.getPosition()}"></div></td>
             <td><div th:text="${employee.getDateOfBirth()}"></div></td>
             <td><div th:text="${employee.getMobilePhone()}"></div></td>

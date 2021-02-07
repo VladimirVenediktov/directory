@@ -26,6 +26,9 @@ public interface EmployeeRepo extends CrudRepository<Employee, Long>, EmployeeRe
     static Specification<Employee> hasDepartment(Long departmentID) {
         return (employee, cq, cb) -> cb.equal(employee.get("departmentID"),  departmentID);
     }
+/*    static Specification<Employee> hasDepartment(Long departmentID) {
+        return (employee, cq, cb) -> cb.like(employee.get("departmentID"), "%" + departmentID + "5");
+    }*/
 
     /*@Query("select e from Employee e where concat(e.firstName, ' ', e.secondName) like '%name%' ")
     List<Employee> findAllByFullName(@Param("name") String name);*/

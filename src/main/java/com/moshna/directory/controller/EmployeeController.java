@@ -88,12 +88,12 @@ public class EmployeeController {
         return employeeService.sortingByPosition(model);
     }
 
-    @PostMapping("filterByName")
+    @PostMapping("filterByParams")
     public String filterByName(@RequestParam String name,
                                @RequestParam String position,
                                @RequestParam Long departmentID,
                                Model model) {
 
-        return employeeService.filterByName(name, position, departmentID, model);
+        return employeeService.filterByParams(name, position, departmentID, model);
     }
 }
