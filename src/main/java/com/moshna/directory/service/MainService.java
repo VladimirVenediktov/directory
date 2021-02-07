@@ -1,11 +1,14 @@
 package com.moshna.directory.service;
 
 import com.moshna.directory.model.Department;
+import com.moshna.directory.model.EmployeeExcelExporter;
 import com.moshna.directory.repo.DepartmentRepo;
 import com.moshna.directory.repo.EmployeeRepo;
 import com.moshna.directory.model.Employee;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,4 +48,23 @@ public class MainService {
             return Collections.emptyList();
         }
     }
+
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=employees.xlsx";
+
+        response.setHeader(headerKey, headerValue);
+
+        List<Employee> employeeList = getEmployeeList();
+        List<Department> departmentList = getDepartmentList();
+
+        EmployeeExcelExporter excelExporter = new EmployeeExcelExporter(employeeList, departmentList);
+        excelExporter.export(response);
+
+    }
+    /*public List<Employee> getFilteredEmployeeListByFullName(String name) {
+        return employeeRepo.findAllByFullName(name);
+    }*/
 }

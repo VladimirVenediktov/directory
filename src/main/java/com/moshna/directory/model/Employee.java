@@ -39,14 +39,6 @@ public class Employee {
         this.email = email;
         this.departmentID = departmentID;
     }
-/*
-    public Employee(Long id, String firstName, String secondName, String mobilePhone, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.mobilePhone = mobilePhone;
-        this.email = email;
-    }*/
 
     public Long getDepartmentID() {
         return departmentID;

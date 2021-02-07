@@ -7,6 +7,12 @@
 </head>
 <body>
 <header th:insert="blocks/header :: header"></header><br>
+
+<form action="/filterByName" method="post" enctype="multipart/form-data">
+    <input type="text" name="name" placeholder="Filter by name" class="form-control"><br>
+    <input type="text" name="position" placeholder="Filter by position" class="form-control"><br>
+    <button type="submit" class="btn btn-secondary">Search</button>
+</form>
 <ul th:each="employee : ${employees}">
     <div>
         <a th:href="${employee.getId()}" th:text="${employee.getFirstName()} + ' ' +  ${employee.getSecondName()}"></a>
@@ -38,7 +44,7 @@
         }
     </style>
 </div>
-<form action="/filterByName" method="post">
+<form action="/sortingByName" method="post">
     <button type="submit">Filter by first name</button>
     <style>
         .btn {
@@ -51,7 +57,7 @@
         }
     </style>
 </form>
-<form action="/filterByPosition" method="post">
+<form action="/sortingByPosition" method="post">
     <button type="submit">Filter by position</button>
 </form>
 <form action="/export" method="get">
