@@ -36,13 +36,30 @@
                 </option>
             </select>
         </div>
-        <button type="submit" class="btn btn-secondary">Update</button>
+        <button type="submit" class="btn">Update</button>
     </form>
         <form th:action="${employee.id} +'/remove'" method="post">
-            <button type="submit" class="btn btn-secondary">Delete</button>
+            <button type="submit" class="btn">Delete</button>
         </form>
 
 
 </div>
+<style>
+    .btn {
+        display: inline-block;
+        background: #8C959D;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 10px;
+        padding: 20px;
+        margin-left: 15px;
+        margin-bottom: 10px;
+    }
+</style>
+<style>
+    body {
+        margin: 20px;
+    }
+</style>
 </body>
 </html>

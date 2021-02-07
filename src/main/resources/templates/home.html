@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:margin-left="http://www.w3.org/1999/xhtml">
 <head>
     <title th:text="${title}"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -66,9 +66,11 @@
         <button type="submit" class="btn btn-secondary">Filter by position</button>
     </form>
 </div>
-<form action="/export" method="get">
-    <button type="submit" class="btn btn-secondary">Export to excel</button>
-</form>
+<div class="row gy-3" >
+    <form action="/export" method="get">
+        <button type="submit" class="btn btn-secondary">Export to excel</button>
+    </form>
+</div>
 
 <style>
     .btn {
@@ -78,8 +80,14 @@
         text-decoration: none;
         border-radius: 10px;
         padding: 20px;
+        margin-left: 15px;
+        margin-bottom: 10px;
     }
 </style>
-
+<style>
+    body {
+        margin: 20px;
+    }
+</style>
 </body>
 </html>
