@@ -12,7 +12,7 @@ public interface EmployeeRepo extends CrudRepository<Employee, Long> {
     /*@Query("select e from Employee e where concat(e.firstName, ' ', e.secondName) like '%name%' ")
     List<Employee> findAllByFullName(@Param("name") String name);*/
 
-    /*@Query("select e.firstName, e.secondName as fullname from Employee e where fullname like '%name%' ")
+   /* @Query("select e from Employee e where('lower(e.fullName) LIKE LOWER(?)',\"%#{name}%\"))
     List<Employee> findAllByFullName(@Param("name") String name);*/
 
 

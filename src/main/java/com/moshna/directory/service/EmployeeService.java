@@ -74,12 +74,21 @@ public class EmployeeService {
         String message = "";
 
         try {
+            for (Department department:departmentList) {
+                if(employee.getDepartmentID() == department.getId()){
+                    employee.setDepartmentName(department.getTitle());
+                    break;
+                }
+            }
+            employee.setFullName(employee.getFirstName() + " " +
+                    employee.getSecondName() + " " +
+                    employee.getThirdName());
             employeeRepo.save(employee);
             model.addAttribute("employees", employeeList);
             return "redirect:/home";
         } catch (Exception e) {
             message = "validation error " + e.getMessage();
-            model.addAttribute("validationMessage", message); //TODO:сделать нормальный вывод ошибок
+            model.addAttribute("validationMessage", message);
             return EMPLOYEE_ADDING;
         }
     }
@@ -127,7 +136,6 @@ public class EmployeeService {
             return "redirect:/home";
         }
         else {
-            //TODO:сделать страничку ошибки
             return ERROR_PAGE;
         }
 
@@ -144,7 +152,6 @@ public class EmployeeService {
             return "redirect:/home";
         }
         else {
-            //TODO:сделать страничку ошибки
             return ERROR_PAGE;
         }
     }

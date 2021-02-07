@@ -8,16 +8,46 @@
 <body>
 <header th:insert="blocks/header :: header"></header><br>
 
+
 <form action="/filterByName" method="post" enctype="multipart/form-data">
     <input type="text" name="name" placeholder="Filter by name" class="form-control"><br>
     <input type="text" name="position" placeholder="Filter by position" class="form-control"><br>
     <button type="submit" class="btn btn-secondary">Search</button>
 </form>
-<ul th:each="employee : ${employees}">
-    <div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Full name</th>
+        <th scope="col">Position</th>
+        <th scope="col">Date of birth</th>
+        <th scope="col">Mobile phone</th>
+        <th scope="col">Email</th>
+        <th scope="col">Department</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ul th:each="employee : ${employees}">
+        <tr>
+            <td><i th:text="${employee.getFirstName()} + ' ' +  ${employee.getSecondName()}"></i></td>
+            <td><i th:text="${employee.getPosition()}"></i></td>
+            <td><i th:text="${employee.getDateOfBirth()}"></i></td>
+            <td><i th:text="${employee.getMobilePhone()}"></i></td>
+            <td><i th:text="${employee.getEmail()}"></i></td>
+            <td><i th:text="${employee.getDepartmentName()}"></i></td>
+            <td><a th:href="${employee.getId()}">Edit</a></td>
+
+        </tr>
+    </ul>
+    </tbody>
+</table>
+
+<!--<ul th:each="employee : ${employees}">
+    <div class="col-4 themed-grid-col">
         <a th:href="${employee.getId()}" th:text="${employee.getFirstName()} + ' ' +  ${employee.getSecondName()}"></a>
     </div>
-</ul>
+</ul>-->
+</div>
 <div class="col-md-5 mb-3">
     <a href="/employee" class="btn">Add new employee</a>
     <style>
