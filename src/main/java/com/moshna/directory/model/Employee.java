@@ -2,11 +2,12 @@ package com.moshna.directory.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "employees",
     uniqueConstraints = {
-        @UniqueConstraint(columnNames ={"firstName", "secondName","Email"})
+        @UniqueConstraint(columnNames ={"firstName", "secondName","email"})
     })
 public class Employee {
 
@@ -18,6 +19,7 @@ public class Employee {
     private String thirdName;
     private String position;
     private String dateOfBirth;
+    @Pattern(regexp = "\\+7[0-9]{10}", message = "Телефонный номер должен начинаться с +7, затем - 10 цифр")
     private String mobilePhone;
     @Email(message = "Email is not correct")
     private String email;

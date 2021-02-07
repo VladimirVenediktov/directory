@@ -12,16 +12,20 @@
     <form action="/filterByParams" method="post" enctype="multipart/form-data">
         <input type="text" name="name" placeholder="Filter by name" class="form-control"><br>
         <input type="text" name="position" placeholder="Filter by position" class="form-control"><br>
-        <div class="form-group blu-margin">
-            <select name="departmentID" class="form-control">
-                <option value="">Select department</option>
-                <option th:each="department : ${departmentList}"
-                        th:value="${department.id}"
-                        th:text="${department.title}">
-                </option>
-            </select>
+            <div class="form-group blu-margin">
+                <select name="departmentID" class="form-control">
+                    <option value="">Select department</option>
+                    <option th:each="department : ${departmentList}"
+                            th:value="${department.id}"
+                            th:text="${department.title}">
+                    </option>
+                </select>
+            </div>
+        <div class="row gy-3">
+            <button type="submit" class="btn btn-secondary">Search</button>
+            <a href="/employee" class="btn">Add new employee</a>
+            <a href="/department" class="btn">Add new department</a>
         </div>
-        <button type="submit" class="btn btn-secondary">Search</button>
     </form>
 </div>
 
@@ -54,22 +58,16 @@
     </tbody>
 </table>
 </div>
-<div class="col-md-5 mb-3">
-    <a href="/employee" class="btn">Add new employee</a>
-</div>
-<div class="col-md-5 mb-3">
-    <a href="/department" class="btn">Add new department</a>
-</div>
-<div class="row">
+<div class="row gy-3">
     <form action="/sortingByName" method="post">
-        <button type="submit">Filter by first name</button>
+        <button type="submit" class="btn btn-secondary">Filter by first name</button>
     </form><br>
     <form action="/sortingByPosition" method="post">
-        <button type="submit">Filter by position</button>
+        <button type="submit" class="btn btn-secondary">Filter by position</button>
     </form>
 </div>
 <form action="/export" method="get">
-    <button type="submit">Export to excel</button>
+    <button type="submit" class="btn btn-secondary">Export to excel</button>
 </form>
 
 <style>
@@ -77,9 +75,9 @@
         display: inline-block;
         background: #8C959D;
         color: #fff;
-        padding: 1rem 1.5rem;
         text-decoration: none;
-        border-radius: 3px;
+        border-radius: 10px;
+        padding: 20px;
     }
 </style>
 

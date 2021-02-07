@@ -4,18 +4,14 @@ import com.moshna.directory.model.Department;
 import com.moshna.directory.model.Employee;
 import com.moshna.directory.repo.DepartmentRepo;
 import com.moshna.directory.repo.EmployeeRepo;
-import com.moshna.directory.repo.EmployeeRepoCustom;
 import com.moshna.directory.repo.EmployeeRepoCustomImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.File;
 import java.util.Comparator;
 import java.util.List;
@@ -191,7 +187,6 @@ public class EmployeeService {
         model.addAttribute("departmentList", departmentList);
         model.addAttribute("employees", employeeList);
         model.addAttribute("employees", employeeFilteredList);
-        //TODO: регистр
 
         return HOME_PAGE;
     }
