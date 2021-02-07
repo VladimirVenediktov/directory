@@ -5,6 +5,8 @@ import com.moshna.directory.model.Employee;
 import com.moshna.directory.repo.DepartmentRepo;
 import com.moshna.directory.repo.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +29,7 @@ public class EmployeeService {
     public static final String HOME_PAGE = "home";
     public static final String EMPLOYEE_ADDING = "employee-adding";
     public static final String EMPLOYEE_DETAILS = "employee-details";
+    public static final String ERROR_PAGE = "error";
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -107,27 +110,43 @@ public class EmployeeService {
                                  Model model) throws Exception {
         Employee employee = employeeRepo.findById(id).orElseThrow(() -> new Exception("Employee not found - " + id));
 
-        employee.setFirstName(firstName);
-        employee.setSecondName(secondName);
-        employee.setThirdName(thirdName);
-        employee.setPosition(position);
-        employee.setDateOfBirth(dateOfBirth);
-        employee.setMobilePhone(mobilePhone);
-        employee.setEmail(email);
-        employee.setDepartmentID(departmentID);
-        employeeRepo.save(employee);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+            employee.setFirstName(firstName);
+            employee.setSecondName(secondName);
+            employee.setThirdName(thirdName);
+            employee.setPosition(position);
+            employee.setDateOfBirth(dateOfBirth);
+            employee.setMobilePhone(mobilePhone);
+            employee.setEmail(email);
+            employee.setDepartmentID(departmentID);
+            employeeRepo.save(employee);
 
-        List<Employee> employeeList = mainService.getEmployeeList();
-        model.addAttribute("employees", employeeList);
-        return "redirect:/home";
+            List<Employee> employeeList = mainService.getEmployeeList();
+            model.addAttribute("employees", employeeList);
+            return "redirect:/home";
+        }
+        else {
+            //TODO:сделать страничку ошибки
+            return ERROR_PAGE;
+        }
+
+
     }
 
     public String employeeDelete(@PathVariable(value = "id") long id, Model model) {
-        employeeRepo.deleteById(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+            employeeRepo.deleteById(id);
 
-        List<Employee> employeeList = mainService.getEmployeeList();
-        model.addAttribute("employees", employeeList);
-        return "redirect:/home";
+            List<Employee> employeeList = mainService.getEmployeeList();
+            model.addAttribute("employees", employeeList);
+            return "redirect:/home";
+        }
+        else {
+            //TODO:сделать страничку ошибки
+            return ERROR_PAGE;
+        }
     }
 
     public String sortingByName(Model model) {
