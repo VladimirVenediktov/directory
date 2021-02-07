@@ -10,6 +10,9 @@
 <div class="container order-md-2 mt-5 mb-5">
     <form action="/department" method="post">
         <input type="text" name="title" placeholder="Enter the title" class="form-control" required><br>
+        <div class="form-group">
+            <a th:text="${validationMessage}"/>
+        </div><br>
         <button type="submit" class="btn btn-secondary">Add</button>
     </form>
 
