@@ -7,7 +7,10 @@ import com.moshna.directory.model.Employee;
 import com.moshna.directory.repo.DepartmentRepo;
 import com.moshna.directory.repo.EmployeeRepo;
 import com.moshna.directory.repo.EmployeeRepoCustomImpl;
+import com.moshna.directory.repo.EmployeeSpecification;
+import com.moshna.directory.repo.SearchCriteria;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -173,19 +176,33 @@ public class EmployeeService {
         return HOME_PAGE;
     }
 
-    public String filterByParams(String name,
+    public String filterByParams(String firstName,
                                String position,
                                Long departmentID,
                                Model model) {
-        List<Employee> employeeFilteredList = employeeRepo.findAll(where(hasFirstName(name)
+       /* List<Employee> employeeFilteredList = employeeRepo.findAll(where(hasFirstName(name)
                 .and(hasPosition(position))
                 .and(hasDepartment(departmentID))));
-        List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
-        List<DepartmentDto> departmentDtoList = getDepartmentDtoList(mainService.getDepartmentList());
+        List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());*/
 
+       EmployeeSpecification firstNameSpec =
+            new EmployeeSpecification(new SearchCriteria("firstName", ":", firstName));
+
+       EmployeeSpecification departmentSpec =
+            new EmployeeSpecification(new SearchCriteria("departmentID", ":", departmentID));
+
+       EmployeeSpecification positionSpec =
+            new EmployeeSpecification(new SearchCriteria("position", ":", position));
+
+        List<Employee> employeeFilteredList = employeeRepo.findAll(Specification.where(firstNameSpec)
+            .and(departmentSpec)
+            .and(positionSpec));
+
+
+        List<DepartmentDto> departmentDtoList = getDepartmentDtoList(mainService.getDepartmentList());
         List<EmployeeDto> employeeDtoFilteredList = getEmployeeDtoList(employeeFilteredList);
         model.addAttribute("departmentList", departmentDtoList);
-        model.addAttribute("employees", employeeDtoList);
+        //model.addAttribute("employees", employeeDtoList);
         model.addAttribute("employees", employeeDtoFilteredList);
 
         return HOME_PAGE;
