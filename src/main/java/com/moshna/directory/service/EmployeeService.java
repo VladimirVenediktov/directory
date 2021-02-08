@@ -1,5 +1,7 @@
 package com.moshna.directory.service;
 
+import com.moshna.directory.dto.DepartmentDto;
+import com.moshna.directory.dto.EmployeeDto;
 import com.moshna.directory.model.Department;
 import com.moshna.directory.model.Employee;
 import com.moshna.directory.repo.DepartmentRepo;
@@ -13,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -47,26 +50,27 @@ public class EmployeeService {
     }
 
     public String goHome(Model model) {
-        List<Employee> employeeList = mainService.getEmployeeList();
-        List<Department> departmentList = mainService.getDepartmentList();
-        model.addAttribute("departmentList", departmentList);
-        model.addAttribute("employees", employeeList);
+
+        List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
+        List<DepartmentDto> departmentDtoList = getDepartmentDtoList(mainService.getDepartmentList());
+        model.addAttribute("departmentList", departmentDtoList);
+        model.addAttribute("employees", employeeDtoList);
         return HOME_PAGE;
     }
 
     public String employeeAdding(Model model) {
-        List<Department> departmentList = mainService.getDepartmentList();
-        model.addAttribute("departmentList", departmentList);
+        List<DepartmentDto> departmentDtoList = getDepartmentDtoList(mainService.getDepartmentList());
+        model.addAttribute("departmentList", departmentDtoList);
         return EMPLOYEE_ADDING;
     }
 
     public String employeePostAdd(Employee employee,
                                   MultipartFile file,
                                   Model model) throws Exception {
+        List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
+        List<DepartmentDto> departmentDtoList = getDepartmentDtoList(mainService.getDepartmentList());
 
-        List<Employee> employeeList = mainService.getEmployeeList();
-        List<Department> departmentList = mainService.getDepartmentList();
-        model.addAttribute("departmentList", departmentList);
+        model.addAttribute("departmentList", departmentDtoList);
         if(file != null) {
             File uploadDir = new File(uploadPath);
 
@@ -82,7 +86,7 @@ public class EmployeeService {
         String message = "";
 
         try {
-            for (Department department:departmentList) {
+            for (DepartmentDto department:departmentDtoList) {
                 if(employee.getDepartmentID() == department.getId()){
                     employee.setDepartmentName(department.getTitle());
                     break;
@@ -92,7 +96,7 @@ public class EmployeeService {
                     employee.getSecondName() + " " +
                     employee.getThirdName());
             employeeRepo.save(employee);
-            model.addAttribute("employees", employeeList);
+            model.addAttribute("employees", employeeDtoList);
             return "redirect:/home";
         } catch (Exception e) {
             message = "validation error " + e.getMessage();
@@ -109,9 +113,14 @@ public class EmployeeService {
 
         List<Department> departmentList = mainService.getDepartmentList();
 
-        model.addAttribute("employee", employee);
-        model.addAttribute("departmentSelected", departmentSelected);
-        model.addAttribute("departmentList", departmentList);
+        EmployeeDto employeeDto = getEmployeeDto(employee);
+        DepartmentDto departmentDtoSelected = getDepartmentDto(departmentSelected);
+        List<DepartmentDto> departmentDtoList = getDepartmentDtoList(departmentList);
+
+
+        model.addAttribute("employee", employeeDto);
+        model.addAttribute("departmentSelected", departmentDtoSelected);
+        model.addAttribute("departmentList", departmentDtoList);
         return EMPLOYEE_DETAILS;
     }
 
@@ -134,8 +143,8 @@ public class EmployeeService {
             employee.setFullName(firstName + " " + secondName);
             employeeRepo.save(employee);
 
-            List<Employee> employeeList = mainService.getEmployeeList();
-            model.addAttribute("employees", employeeList);
+            List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
+            model.addAttribute("employees", employeeDtoList);
             return "redirect:/home";
         }
         else {
@@ -150,8 +159,8 @@ public class EmployeeService {
         if (auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
             employeeRepo.deleteById(id);
 
-            List<Employee> employeeList = mainService.getEmployeeList();
-            model.addAttribute("employees", employeeList);
+            List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
+            model.addAttribute("employees", employeeDtoList);
             return "redirect:/home";
         }
         else {
@@ -160,18 +169,16 @@ public class EmployeeService {
     }
 
     public String sortingByName(Model model) {
-        List<Employee> employeeList = mainService.getEmployeeList();
-
-        employeeList.sort(Comparator.comparing(Employee::getFirstName));
-        model.addAttribute("employees", employeeList);
+        List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
+        employeeDtoList.sort(Comparator.comparing(EmployeeDto::getFirstName));
+        model.addAttribute("employees", employeeDtoList);
         return HOME_PAGE;
     }
 
     public String sortingByPosition(Model model) {
-        List<Employee> employeeList = mainService.getEmployeeList();
-
-        employeeList.sort(Comparator.comparing(Employee::getPosition));
-        model.addAttribute("employees", employeeList);
+        List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
+        employeeDtoList.sort(Comparator.comparing(EmployeeDto::getPosition));
+        model.addAttribute("employees", employeeDtoList);
         return HOME_PAGE;
     }
 
@@ -182,12 +189,46 @@ public class EmployeeService {
         List<Employee> employeeFilteredList = employeeRepo.findAll(where(hasFirstName(name)
                 .and(hasPosition(position))
                 .or(hasDepartment(departmentID))));
-        List<Employee> employeeList = mainService.getEmployeeList();
-        List<Department> departmentList = mainService.getDepartmentList();
-        model.addAttribute("departmentList", departmentList);
-        model.addAttribute("employees", employeeList);
-        model.addAttribute("employees", employeeFilteredList);
+        List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
+        List<DepartmentDto> departmentDtoList = getDepartmentDtoList(mainService.getDepartmentList());
+
+        List<EmployeeDto> employeeDtoFilteredList = getEmployeeDtoList(employeeFilteredList);
+        model.addAttribute("departmentList", departmentDtoList);
+        model.addAttribute("employees", employeeDtoList);
+        model.addAttribute("employees", employeeDtoFilteredList);
 
         return HOME_PAGE;
+    }
+
+    public List<DepartmentDto> getDepartmentDtoList(List<Department> departmentList) {
+        List<DepartmentDto> departmentDtoList = new ArrayList<>();
+        for (Department department: departmentList) {
+            departmentDtoList.add(new DepartmentDto(department.getId(),
+                    department.getTitle()));
+        }
+        return departmentDtoList;
+    }
+
+    public List<EmployeeDto> getEmployeeDtoList(List<Employee> employeeList) {
+        List<EmployeeDto> employeeDtoList = new ArrayList<>();
+
+        for (Employee e: employeeList) {
+            employeeDtoList.add(new EmployeeDto(e.getId(), e.getFirstName(), e.getSecondName(), e.getThirdName(),
+                    e.getPosition(), e.getDateOfBirth(), e.getMobilePhone(),
+                    e.getEmail(), e.getDepartmentID(), e.getFileName(),
+                    e.getDepartmentName(), e.getFullName()));
+        }
+        return employeeDtoList;
+    }
+
+    public DepartmentDto getDepartmentDto(Department department) {
+        return new DepartmentDto(department.getId(), department.getTitle());
+    }
+
+    public EmployeeDto getEmployeeDto(Employee employee) {
+        return new EmployeeDto(employee.getId(), employee.getFirstName(), employee.getSecondName(), employee.getThirdName(),
+                employee.getPosition(), employee.getDateOfBirth(), employee.getMobilePhone(),
+                employee.getEmail(), employee.getDepartmentID(), employee.getFileName(),
+                employee.getDepartmentName(), employee.getFullName());
     }
 }
