@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -71,18 +72,7 @@ public class EmployeeService {
         List<DepartmentDto> departmentDtoList = getDepartmentDtoList(mainService.getDepartmentList());
 
         model.addAttribute("departmentList", departmentDtoList);
-        if(file != null) {
-            File uploadDir = new File(uploadPath);
-
-            if(!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFileName = uuidFile + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + resultFileName));
-            employee.setFileName(resultFileName);
-        }
-
+        setFileToEmployee(file, employee);
         String message = "";
 
         try {
@@ -127,7 +117,7 @@ public class EmployeeService {
     public String employeeUpdate(long id, String firstName, String secondName,
                                  String thirdName, String position, String dateOfBirth,
                                  String mobilePhone, String email, Long departmentID,
-                                 Model model) throws Exception {
+                                 MultipartFile file, Model model) throws Exception {
         Employee employee = employeeRepo.findById(id).orElseThrow(() -> new Exception("Employee not found - " + id));
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -141,6 +131,7 @@ public class EmployeeService {
             employee.setEmail(email);
             employee.setDepartmentID(departmentID);
             employee.setFullName(firstName + " " + secondName);
+            setFileToEmployee(file, employee);
             employeeRepo.save(employee);
 
             List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
@@ -188,7 +179,7 @@ public class EmployeeService {
                                Model model) {
         List<Employee> employeeFilteredList = employeeRepo.findAll(where(hasFirstName(name)
                 .and(hasPosition(position))
-                .or(hasDepartment(departmentID))));
+                .and(hasDepartment(departmentID))));
         List<EmployeeDto> employeeDtoList = getEmployeeDtoList(mainService.getEmployeeList());
         List<DepartmentDto> departmentDtoList = getDepartmentDtoList(mainService.getDepartmentList());
 
@@ -230,5 +221,19 @@ public class EmployeeService {
                 employee.getPosition(), employee.getDateOfBirth(), employee.getMobilePhone(),
                 employee.getEmail(), employee.getDepartmentID(), employee.getFileName(),
                 employee.getDepartmentName(), employee.getFullName());
+    }
+
+    public void setFileToEmployee(MultipartFile file, Employee employee) throws IOException {
+        if(file != null) {
+            File uploadDir = new File(uploadPath);
+
+            if(!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFileName = uuidFile + "." + file.getOriginalFilename();
+            file.transferTo(new File(uploadPath + "/" + resultFileName));
+            employee.setFileName(resultFileName);
+        }
     }
 }

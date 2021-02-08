@@ -8,7 +8,7 @@
 <body>
 <header th:insert="blocks/header :: header"></header><br>
 <div class="container order-md-2 mt-5 mb-5">
-    <form th:action="${employee.id} +'/update'" method="post">
+    <form th:action="${employee.id} +'/update'" method="post" enctype="multipart/form-data">
         <img th:src="@{'/img/' + ${employee.getFileName()}}"/><br>
         <label class="form-label">First name</label>
         <input type="text" name="firstName" th:value="${employee.getFirstName()}" class="form-control" required><br>
@@ -36,6 +36,7 @@
                 </option>
             </select>
         </div>
+        <input type="file" name="file" class="button"><br>
         <button type="submit" class="btn">Update</button>
     </form>
         <form th:action="${employee.id} +'/remove'" method="post">

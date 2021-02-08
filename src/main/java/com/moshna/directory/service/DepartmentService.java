@@ -23,8 +23,6 @@ public class DepartmentService {
 
         try {
             departmentRepo.save(department);
-            //model.addAttribute("departmentList", departmentList);
-
             return "redirect:/home";
         } catch (Exception e) {
             message = "validation error";

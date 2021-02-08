@@ -3,7 +3,6 @@ package com.moshna.directory.controller;
 import com.moshna.directory.model.Employee;
 import com.moshna.directory.service.EmployeeService;
 import com.moshna.directory.service.MainService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -64,9 +63,10 @@ public class EmployeeController {
                                  @RequestParam String mobilePhone,
                                  @RequestParam String email,
                                  @RequestParam Long departmentID,
+                                 @RequestParam("file") MultipartFile file,
                                  Model model) throws Exception {
         return employeeService.employeeUpdate(id, firstName,secondName, thirdName,
-                position, dateOfBirth, mobilePhone, email, departmentID, model);
+                position, dateOfBirth, mobilePhone, email, departmentID, file, model);
     }
 
     @PostMapping("{id}/remove")
